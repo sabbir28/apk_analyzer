@@ -1,185 +1,160 @@
 
 # APK Analyzer
 
-A Python-based Android APK analysis tool that extracts APK metadata, resources, and generates a structured JSON report.
+A lightweight Python-based Android APK analysis tool that extracts application metadata, resources, certificates, architecture information, framework detection, and generates detailed reports.
 
-The analyzer can inspect APK files and collect information such as:
-
-- Application name
-- Package name
-- Version information
-- APK size
-- Permissions
-- CPU architectures
-- Android SDK versions
-- Signing certificate SHA256 fingerprint
-- Launcher activity
-- Framework detection
-- Complete APK resource extraction
+Built with **Python** and **Androguard**.
 
 ---
 
 ## Features
 
-### APK Metadata Extraction
+### 📱 Application Information
 
 Extracts:
 
-```json
-{
-    "name": "Application Name",
-    "package": "com.example.app",
-    "version": "1.0",
-    "version_code": "1",
-    "size": "50MB"
-}
-````
+- Application name
+- Package name
+- Version name
+- Version code
+- APK file size
+- Launcher activity
+- Minimum Android SDK
+- Target Android SDK
 
 ---
 
-### Permission Analysis
+### 🔐 Certificate Analysis
 
-Detects Android permissions:
+Generates:
 
-Example:
+- APK signing certificate SHA-256 fingerprint
+- Certificate hash report
 
-```json
-"permissions": [
-    "INTERNET",
-    "CAMERA",
-    "RECORD_AUDIO"
-]
+Useful for:
+
+- APK verification
+- App identity checking
+- Security analysis
+
+---
+
+### 🖼️ Icon Extraction
+
+Automatically extracts the application launcher icon.
+
+Output:
+
+```
+
+icon.png
+
 ```
 
 ---
 
-### Architecture Detection
+### 📂 APK Resource Extraction
 
-Supports:
+Temporarily extracts APK contents:
 
-* arm64-v8a
-* armeabi-v7a
-* x86
-* x86_64
+```
+
+resources/
+├── AndroidManifest.xml
+├── classes.dex
+├── res/
+├── assets/
+└── lib/
+
+````
+
+After analysis, temporary files are removed automatically.
+
+---
+
+### 🏗️ Architecture Detection
+
+Detects supported CPU architectures:
+
+Supported:
+
+- arm64-v8a
+- armeabi-v7a
+- x86
+- x86_64
 
 Example:
 
 ```json
 "architecture": [
-    "arm64-v8a"
+    "arm64-v8a",
+    "armeabi-v7a"
 ]
-```
+````
 
 ---
 
-### Framework Detection
+### 🚀 Framework Detection
 
-Attempts to identify application frameworks:
+Automatically detects common Android frameworks:
 
-Supported detection:
+Supported:
 
 * Native Android
 * Flutter
 * Unity
 * Xamarin
+* React Native
 
 Example:
 
 ```json
-"framework": "Native Android"
+"framework": "Flutter"
 ```
 
 ---
 
-### Certificate Analysis
+### 🔑 Permission Analysis
 
-Extracts APK signing certificate fingerprint:
+Extracts requested Android permissions.
+
+Example:
 
 ```json
-"certificate_sha256": "xxxxxxxxxxxxxxxx"
+[
+    "INTERNET",
+    "CAMERA",
+    "ACCESS_FINE_LOCATION"
+]
 ```
-
-Useful for:
-
-* App verification
-* Malware analysis
-* APK comparison
 
 ---
 
-### Resource Extraction
+### 📊 Generated Reports
 
-Extracts the complete APK contents:
+The analyzer creates an output directory:
+
+Example:
 
 ```
-Application_analysis/
+app-debug_analysis/
 │
 ├── metadata.json
-│
-└── resources/
-    │
-    ├── AndroidManifest.xml
-    ├── classes.dex
-    ├── resources.arsc
-    │
-    ├── lib/
-    │   └── arm64-v8a/
-    │       └── *.so
-    │
-    ├── res/
-    │
-    └── assets/
+├── info.txt
+├── certificate.sha256
+└── icon.png
 ```
 
 ---
 
-# Installation
+## Installation
 
-## Requirements
+### Requirements
 
-* Python 3.12+
+* Python 3.10+
 * pip
-* Virtual environment recommended
 
----
-
-## Clone Repository
-
-```bash
-git clone https://github.com/sabbir28/apk-analyzer.git
-
-cd apk-analyzer
-```
-
----
-
-## Create Virtual Environment
-
-Windows:
-
-```bat
-python -m venv .venv
-
-.venv\Scripts\activate
-```
-
-Linux:
-
-```bash
-python3 -m venv .venv
-
-source .venv/bin/activate
-```
-
----
-
-## Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-or:
+Install dependencies:
 
 ```bash
 pip install androguard
@@ -187,153 +162,122 @@ pip install androguard
 
 ---
 
-# Usage
+## Usage
 
-Analyze an APK:
+Run:
 
 ```bash
-python apk_analyzer.py example.apk
+python analyzer.py your_app.apk
 ```
 
 Example:
 
 ```bash
-python apk_analyzer.py Signal.apk
+python analyzer.py app-debug.apk
 ```
 
 ---
 
-# Output
+## Example Output
 
-After analysis:
+Terminal:
 
 ```
-Signal_analysis/
-│
-├── metadata.json
-│
-└── resources/
+[+] Extracting resources...
+[+] Analyzing APK...
+[+] Cleaning temporary files...
+
+[+] Completed
+
+{
+    "name": "Example App",
+    "package": "com.example.app",
+    "version": "1.0",
+    "version_code": 1,
+    "size": "25.34 MB",
+    "framework": "Native Android",
+    "architecture": [
+        "arm64-v8a"
+    ]
+}
+
+[+] Output: app-debug_analysis
 ```
 
 ---
 
-## Example JSON Output
+## JSON Report Example
 
 `metadata.json`
 
 ```json
 {
-    "name": "Signal",
-    "package": "org.thoughtcrime.securesms",
-    "version": "7.15",
-    "version_code": "70150000",
-    "size": "120MB",
-
+    "name": "Example App",
+    "package": "com.example.app",
+    "version": "1.0",
+    "version_code": 10,
+    "size": "18.20 MB",
     "permissions": [
         "INTERNET",
-        "CAMERA",
-        "RECORD_AUDIO"
+        "CAMERA"
     ],
-
     "architecture": [
         "arm64-v8a"
     ],
-
-    "min_android": "26",
+    "min_android": "23",
     "target_android": "35",
-
-    "framework": "Native Android",
-
-    "launcher_activity": "org.thoughtcrime.securesms.MainActivity",
-
+    "framework": "Flutter",
+    "launcher_activity": "com.example.MainActivity",
     "certificate_sha256": "xxxxxxxx",
-
-    "files_count": 3000
+    "files_count": 245
 }
 ```
 
 ---
 
-# Project Structure
+## Project Structure
 
 ```
-apk-analyzer/
+apk_analyzer/
 │
-├── apk_analyzer.py
-├── requirements.txt
+├── analyzer.py
 ├── README.md
-│
-└── examples/
-    └── sample.apk
+└── sample.apk
 ```
 
 ---
 
-# Technologies
+## Use Cases
 
-Built with:
-
-* Python
-* Androguard
-* pathlib
-* argparse
-* hashlib
-* JSON
+* Android application inspection
+* APK metadata extraction
+* Security research
+* Malware analysis preparation
+* App store automation
+* APK catalog generation
 
 ---
 
-# Use Cases
+## Limitations
 
-## Application Inventory
-
-Create a database of installed APK information.
-
-## Security Research
-
-Analyze:
-
-* Permissions
-* Certificates
-* Native libraries
-* APK structure
-
-## Developer Tools
-
-Inspect:
-
-* Build information
-* Supported architectures
-* Framework usage
-
-## Malware Research
-
-Collect APK intelligence before deeper analysis.
+* Does not perform full malware scanning
+* Does not decompile DEX bytecode
+* Framework detection is based on file signatures
+* Some protected/obfuscated APKs may hide information
 
 ---
 
-# Limitations
+## Future Improvements
 
-* Cannot determine whether an application is open source automatically.
-* Framework detection is heuristic-based.
-* Obfuscated applications may hide some information.
-* Encrypted APK resources may require additional tools.
+Possible upgrades:
 
----
-
-# License
-
-MIT License
-
-You are free to use, modify, and distribute this project.
+* [ ] AndroidManifest XML parsing
+* [ ] DEX class analysis
+* [ ] API usage detection
+* [ ] Malware behavior scoring
+* [ ] VirusTotal API integration
+* [ ] Web dashboard interface
+* [ ] APK comparison system
+* [ ] Automatic screenshot generation
 
 ---
-
-# Author
-
-Sabbir
-
-GitHub:
-[https://github.com/sabbir28](https://github.com/sabbir28)
-
-```
-```
