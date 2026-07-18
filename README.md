@@ -1,4 +1,4 @@
-````markdown
+
 # APK Analyzer
 
 A Python-based Android APK analysis tool that extracts APK metadata, resources, and generates a structured JSON report.
@@ -146,7 +146,7 @@ Application_analysis/
 ## Clone Repository
 
 ```bash
-git clone https://github.com/username/apk-analyzer.git
+git clone https://github.com/sabbir28/apk-analyzer.git
 
 cd apk-analyzer
 ```
